@@ -1,5 +1,5 @@
-import os
-from time import sleep
+import os # *
+from time import sleep # *
 
 historicos = []
 histcount = 0
@@ -13,23 +13,23 @@ def main():
         if op == '1':
             histcount += 1
             opc1()
-            os.system("cls" if os.name == "nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear") # *
         elif op == '2':
             histcount += 1
             opc2()
-            os.system("cls" if os.name == "nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear") # *
         elif op == '3':
             histcount += 1
             opc3()
-            os.system("cls" if os.name == "nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear") # *
         elif op == '4':
             opc4()
-            os.system("cls" if os.name == "nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear") # *
         elif op == '0':
             ponto = '.'
-            for _ in range(3):
+            for _ in range(3): # *
                 print(f"Saindo{ponto}")
-                sleep(0.8)
+                sleep(0.8) # *
                 ponto += "."
             return
         else:
@@ -37,7 +37,7 @@ def main():
 
 #Função Modo pet - descrição
 def opc1():
-    os.system("cls" if os.name == "nt" else "clear")
+    os.system("cls" if os.name == "nt" else "clear") # *
     historicos.append("Modo Pet")
     print("Modo Pet:")
     print("Esse modo é focado em tirar fotos de forma automática de pets assim que a câmera for estabilizada e reconhecer o animal.")
@@ -45,7 +45,7 @@ def opc1():
 
 #Função Modo documento - descrição
 def opc2():
-    os.system("cls" if os.name == "nt" else "clear")
+    os.system("cls" if os.name == "nt" else "clear") # *
     historicos.append("Modo Documento")
     print("Modo Documento:")
     print("Esse modo escaneia textos e os envias para a área de transferencia do celular.")
@@ -53,7 +53,7 @@ def opc2():
 
 #Função Modo live suggestions - descrição
 def opc3():
-    os.system("cls" if os.name == "nt" else "clear")
+    os.system("cls" if os.name == "nt" else "clear") # *
     historicos.append("Modo Live Suggestions")
     print("Modo Live Suggestions:")
     print("Esse modo analisa a cena atual e sugere quais alterações nas configurações da câmera seriam ideias para aquela ocasião.")
@@ -62,13 +62,12 @@ def opc3():
 #Função Histórico - mostra a histórico
 def opc4():
     barra = '-------------------------'
-    os.system("cls" if os.name == "nt" else "clear")
+    os.system("cls" if os.name == "nt" else "clear") # *
     print("Seu histórico: ")
     print("Você acessou 1 modo." if histcount == 1 else f"Você acessou {histcount} modos.")
     print(barra)
     print(f"Histórico: ", end='')
-    for i in historicos:
-        
+    for i in historicos: # *
         print(i, end=' | ')
     print(f"\n{barra}")
     input("Digite algo para voltar: ")
