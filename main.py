@@ -146,7 +146,7 @@ def opc5():
                 plt.show()
 
             case '0':
-                return
+                break
 
             case _:
                 print("Opção inválida")
