@@ -1,16 +1,32 @@
 import os # *
 from time import sleep # *
 import matplotlib.pyplot as plt
+import requests
 
 historicos = []
 histcount = 0
 
-#Função principal
+def buscarCidade(nome):
+    url = "https://geocoding-api.open-meteo.com/v1/search"
+    params = {"name": nome, "count": 1, "language": "pt", "countryCode": "BR"}
+    resposta = requests.get(url, params=params, timeout=10)
+    dic = resposta.json()
+    resultados = dic.get("results")
+    cidade = resultados[0]
+    return cidade["latitude"], cidade["longitude"]
+
+def buscarClima(lat, lon):
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {"latitude": lat, "longitude": lon, "current": "cloud_cover,uv_index,precipitation,visibility,wind_gusts_10m", "daily": "sunrise,sunset,uv_index_max", "timezone": "auto", "forecast_days": 1}
+    resposta = requests.get(url, params=params, timeout=10)
+    dic = resposta.json()
+    return dic
+
 def main():
     global histcount
     while True:
-        print(f"MENU EXPLICATIVO DA CÂMERA: \n \n1. Modo pet \n2. Modo documento \n3. Modo Live Suggestions \n4. Histórico \n5. Gráficos\n0. Sair")
-        op = input("Digite a opção que deseja visualisar: ")
+        print(f"MENU EXPLICATIVO DA CÂMERA: \n \n1. Modo pet \n2. Modo documento \n3. Modo Live Suggestions \n4. Histórico \n5. Gráficos\n6. Condições para Foto\n0. Sair")
+        op = input("Digite a opção que deseja visualizar: ")
         match op:
             case '1':
                 histcount += 1
@@ -35,6 +51,11 @@ def main():
                 histcount += 1
                 opc5() # *
                 os.system("cls" if os.name == "nt" else "clear") # *
+
+            case '6':
+                histcount += 1
+                opc6()
+                os.system("cls" if os.name == "nt" else "clear")
 
             case '0':
                 ponto = '.'
@@ -68,7 +89,7 @@ def opc3():
     os.system("cls" if os.name == "nt" else "clear") # *
     historicos.append("Modo Live Suggestions")
     print("Modo Live Suggestions:")
-    print("Esse modo analisa a cena atual e sugere quais alterações nas configurações da câmera seriam ideias para aquela ocasião.")
+    print("Esse modo analisa a cena atual e sugere quais alterações nas configurações da câmera seriam ideais para aquela ocasião.")
     input("Digite algo para voltar: ")
 
 #Função Histórico - mostra a histórico
@@ -88,7 +109,7 @@ def opc4():
 
 def opc5():
     os.system("cls" if os.name == "nt" else "clear") # *
-
+    historicos.append("Gráficos")
     while True:
         print("\nGRÁFICOS DA PESQUISA: \n1. Aceitação dos modos\n2. Modo Documento por faixa etária\n3. Aceitação do Live Suggestions\n4. Aceitação do Modo Pet\n0. Voltar")
         op = input("- ")
@@ -150,5 +171,43 @@ def opc5():
 
             case _:
                 print("Opção inválida")
+
+def opc6():
+    os.system("cls" if os.name == "nt" else "clear")
+    historicos.append("Condições para Foto")
+    print("Digite o nome da sua cidade")
+    nome = input("- ")
+    resultado = buscarCidade(nome)
+    lat = resultado[0]
+    lon = resultado[1]
+    dic = buscarClima(lat, lon)
+    print("Análise de clima: ")
+    print(f"Para a cidade {nome}, os valores que alteram a qualidade de uma foto são:")
+    print(f"Porcentagem de Nuvens: {dic['current']['cloud_cover']}%")
+    print(f"Índice UV: {dic['current']['uv_index']}")
+    print(f"Precipitação: {dic['current']['precipitation']}mm")
+    print(f"Visibilidade: {dic['current']['visibility']}m")
+    print("--------------------------------")
+    if dic["current"]["cloud_cover"] >= 80:
+        print("Céu muito encoberto: luz fraca e sem contraste. Aumente o ISO ou use o modo HDR")
+    else:
+        print("Céu limpo: luz normal e contraste OK. Nenhuma alteração sugerida")
+    
+    if dic["current"]["uv_index"] >= 8:
+        print("UV muito alto: Sol forte, sombras duras. Evite fotografar de frente para o Sol ou use o modo HDR")
+    else:
+        print("UV normal: Sol ameno, sombras OK. Nenhuma alteração sugerida")
+
+    if dic["current"]["precipitation"] > 0:
+        print("Chuva identificada: chance de molhar ou borrar câmera. Proteja seu celular da chuva")
+    else:
+        print("Chuva não identificada: sem risco de molhar o celular. Nenhuma sugestão")
+
+    if dic["current"]["visibility"] < 1000:
+        print("Neblina forte: visibilidade reduzida e sem contraste. Aumente o ISO ou use o modo HDR")
+    else:
+        print("Visibilidade alta: sem neblina e contraste OK. Nenhuma alteração sugerida")
+
+    input("\nDigite algo para voltar: ")
 
 main()
